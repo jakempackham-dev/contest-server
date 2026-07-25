@@ -2,8 +2,19 @@ const express = require('express');
 const cors = require('cors');
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
+app.options('*', cors());
 app.use(express.json({ limit: '10mb' }));
+
+app.get('/', (req, res) => {
+  res.send('Contest Survey API — online');
+});
 
 app.post('/api/chat', async (req, res) => {
   try {
@@ -29,8 +40,6 @@ app.post('/api/chat', async (req, res) => {
     res.status(500).json({ error: 'Server error: ' + err.message });
   }
 });
-
-app.get('/', (req, res) => res.send('Contest Survey API — online'));
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
